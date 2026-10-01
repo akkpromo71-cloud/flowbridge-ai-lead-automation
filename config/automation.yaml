@@ -1,0 +1,45 @@
+version: automation-5
+business_id: automation
+company_name: Flowbridge
+tagline: Автоматизация входящих обращений под контролем команды
+timezone: Asia/Qyzylorda
+language: ru
+services:
+  - id: lead_automation
+    name: Автоматизация заявок
+    description: Приём, анализ и обработка входящих обращений с одобрением ответов менеджером.
+  - id: integrations
+    name: Интеграции систем
+    description: Согласование потоков данных и событий между действующими бизнес-системами.
+branding:
+  primary_color: '#A8B7CC'
+  headline: Автоматизируем ваши заявки.
+  description: AI разбирает обращения. Система готовит черновик по шаблону — вы проверяете и одобряете отправку.
+  primary_cta: Обсудить задачу
+  secondary_cta: Посмотреть демо
+scoring:
+  version: scoring-1
+  hot_min: 70
+  warm_min: 40
+  not_fit_cap: 39
+  budget_thresholds:
+    - service_id: lead_automation
+      currency: KZT
+      period: one_time
+      amount: '300000'
+    - service_id: integrations
+      currency: KZT
+      period: one_time
+      amount: '300000'
+followup:
+  delay_hours: 48
+  mailbox_freshness_minutes: 5
+ai:
+  model: gpt-4.1-mini-2025-04-14
+  prompt_version: lead-facts-1
+  max_output_tokens: 2400
+  timeout_seconds: 40
+approved_facts:
+  - Мы обсуждаем автоматизацию приёма и обработки входящих заявок.
+  - Объём работ определяется после уточнения процессов и требований.
+privacy_notice: Контакты и текст обращения используются для обработки вашего запроса. Условия работы с реальными данными и сроки хранения согласуются перед клиентским пилотом. В демонстрации используйте только синтетические данные.

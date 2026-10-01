@@ -1,0 +1,1 @@
+"""AI Lead Automation application."""

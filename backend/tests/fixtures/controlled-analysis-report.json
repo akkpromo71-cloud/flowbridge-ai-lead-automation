@@ -1,0 +1,207 @@
+{
+  "fixture_kind": "synthetic_mock_provider_report_NOT_live_evidence",
+  "status": "completed",
+  "requests_attempted": 1,
+  "model": "gpt-4.1-mini-2025-04-14",
+  "actual_model_matches": true,
+  "schema": {
+    "status": "passed"
+  },
+  "semantic": {
+    "status": "pass",
+    "issues": []
+  },
+  "score_checks": {
+    "score": true,
+    "temperature": true
+  },
+  "case": {
+    "id": "controlled-pipeline-01",
+    "source": "Мы — мастерская печати постеров. Заказы приходят через форму на сайте, а координатор вручную переносит обращения в таблицу. Нужна автоматизация приёма и анализа входящих заявок, при этом каждый ответ должен одобрять координатор. Хотим сократить повторный ввод и быстрее разбирать обращения. Пришлите предложение по такому проекту. На ваши услуги выделяем ровно 460000 KZT разово за проект. Начать работу хотим через 45 дней.",
+    "expectations": {
+      "field_values": {
+        "service_fit": [
+          "fit"
+        ],
+        "service_id": [
+          "lead_automation"
+        ],
+        "language": [
+          "ru"
+        ],
+        "urgency": [
+          "within_90_days"
+        ],
+        "intent": [
+          "proposal"
+        ],
+        "suggested_next_action": [
+          "discuss_project",
+          "clarify"
+        ]
+      },
+      "budgets": [
+        {
+          "minimum": [
+            "460000"
+          ],
+          "maximum": [
+            "460000"
+          ],
+          "currency": [
+            "KZT"
+          ],
+          "period": [
+            "one_time"
+          ],
+          "purpose": [
+            "services"
+          ],
+          "service_id": [
+            null,
+            "lead_automation"
+          ]
+        }
+      ],
+      "non_null_fields": [
+        "business_context.value",
+        "desired_outcome.value"
+      ],
+      "null_fields": [],
+      "contradictions": "empty",
+      "validation": "pass",
+      "required_issue_codes": [],
+      "scoring_status": "completed"
+    },
+    "expected_score": 95,
+    "expected_temperature": "HOT",
+    "forbidden_inventions": [
+      "delivery deadline",
+      "advertising budget",
+      "automatically approved or sent reply",
+      "unknown service fee or currency"
+    ]
+  },
+  "analysis": {
+    "model": "gpt-4.1-mini-2025-04-14",
+    "facts": {
+      "service_fit": "fit",
+      "service_id": "lead_automation",
+      "service_evidence": [
+        "Нужна автоматизация приёма и анализа входящих заявок"
+      ],
+      "intent": "proposal",
+      "intent_evidence": [
+        "Пришлите предложение по такому проекту"
+      ],
+      "urgency": "within_90_days",
+      "urgency_evidence": [
+        "Начать работу хотим через 45 дней"
+      ],
+      "budgets": [
+        {
+          "minimum": "460000",
+          "maximum": "460000",
+          "currency": "KZT",
+          "period": "one_time",
+          "purpose": "services",
+          "service_id": "lead_automation",
+          "evidence": [
+            "На ваши услуги выделяем ровно 460000 KZT разово за проект"
+          ]
+        }
+      ],
+      "business_context": {
+        "value": "Мастерская печати постеров, заявки из сайта вручную переносят в таблицу",
+        "evidence": [
+          "Мы — мастерская печати постеров",
+          "координатор вручную переносит обращения в таблицу"
+        ]
+      },
+      "desired_outcome": {
+        "value": "Автоматизировать входящие заявки и сократить повторный ввод",
+        "evidence": [
+          "Нужна автоматизация приёма и анализа входящих заявок",
+          "Хотим сократить повторный ввод и быстрее разбирать обращения"
+        ]
+      },
+      "summary": "Мастерская просит автоматизировать входящие заявки с одобрением ответов.",
+      "missing_information": [],
+      "contradictions": [],
+      "suggested_next_action": "discuss_project",
+      "language": "ru"
+    },
+    "result": {
+      "score": 95,
+      "temperature": "HOT",
+      "status": "completed",
+      "criteria": [
+        {
+          "key": "service_fit",
+          "points": 30,
+          "maximum": 30,
+          "reason": "Услуга подходит"
+        },
+        {
+          "key": "intent",
+          "points": 30,
+          "maximum": 30,
+          "reason": "Намерение: proposal"
+        },
+        {
+          "key": "urgency",
+          "points": 10,
+          "maximum": 15,
+          "reason": "Срок: within_90_days"
+        },
+        {
+          "key": "budget",
+          "points": 15,
+          "maximum": 15,
+          "reason": "Бюджет услуг достигает настроенного порога"
+        },
+        {
+          "key": "business_context",
+          "points": 5,
+          "maximum": 5,
+          "reason": "Бизнес-контекст подтверждён цитатой"
+        },
+        {
+          "key": "desired_outcome",
+          "points": 5,
+          "maximum": 5,
+          "reason": "Ожидаемый результат подтверждён цитатой"
+        }
+      ],
+      "config_version": "automation-5",
+      "scoring_version": "scoring-1",
+      "review_reasons": []
+    },
+    "usage": {
+      "provider": "openai",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "config_version": "automation-5",
+      "prompt_version": "lead-facts-1",
+      "schema_version": "lead-facts-1",
+      "input_tokens": 100,
+      "output_tokens": 100,
+      "latency_ms": 1
+    },
+    "latency_ms": 1
+  },
+  "api": {
+    "http_status": 200,
+    "actual_model": "gpt-4.1-mini-2025-04-14",
+    "response_status": "completed",
+    "incomplete_reason": null,
+    "refusal_present": false,
+    "transport_error": null,
+    "usage": {
+      "input_tokens": 100,
+      "output_tokens": 100
+    },
+    "request_id": "req_synthetic_restoration",
+    "response_id": "resp_synthetic_restoration"
+  },
+  "lead_id": "00000000-0000-4000-8000-000000000006"
+}

@@ -1,0 +1,77 @@
+{
+  "id": "aiLeadMailSync",
+  "name": "AI Lead | mail-sync",
+  "active": false,
+  "nodes": [
+    {
+      "id": "schedule",
+      "name": "Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "operation",
+      "name": "Run backend check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/internal/v1/mailboxes/default/sync",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadInternalAuth",
+          "name": "AI Lead Internal API"
+        }
+      },
+      "retryOnFail": false
+    }
+  ],
+  "connections": {
+    "Schedule": {
+      "main": [
+        [
+          {
+            "node": "Run backend check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "UTC",
+    "executionTimeout": 180,
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false
+  },
+  "pinData": {},
+  "tags": []
+}

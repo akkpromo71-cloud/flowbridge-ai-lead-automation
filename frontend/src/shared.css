@@ -1,0 +1,454 @@
+@layer reset, base, components, responsive, readability, workspace-polish;
+
+/* Shared landing primitives. Full workspace styles load with workspace routes. */
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  blockquote {
+    margin: 0;
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button {
+    color: inherit;
+    cursor: pointer;
+    border: 0;
+    background: none;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  svg {
+    flex-shrink: 0;
+  }
+  img {
+    max-width: 100%;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 32px;
+  }
+}
+@layer base {
+  :root {
+    font-family: Inter, Arial, sans-serif;
+    font-synthesis: none;
+    font-weight: 400;
+    --indigo: #a8b7cc;
+    --indigo-hover: #c8d2e0;
+    --ink: #f4f4f5;
+    --muted: #a1a1aa;
+    --border: #303137;
+    --paper: #101114;
+    --surface: #17181c;
+    --green: #82c8a3;
+    --radius: 12px;
+  }
+  body {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.035em;
+  }
+  h1 {
+    font-size: 36px;
+  }
+  h2 {
+    font-size: 30px;
+  }
+  h3 {
+    font-size: 18px;
+  }
+  button,
+  input,
+  textarea,
+  select {
+    font-size: 14px;
+  }
+  button:disabled {
+    opacity: 0.55;
+  }
+  input,
+  textarea,
+  select {
+    min-width: 0;
+    border: 1px solid #42434b;
+    border-radius: 8px;
+    background: #101114;
+    color: #f4f4f5;
+  }
+  input,
+  select {
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+  textarea {
+    padding: 12px 13px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: #92949e;
+  }
+  :focus-visible {
+    outline: 2px solid var(--indigo);
+    outline-offset: 4px;
+  }
+  [aria-invalid="true"] {
+    border-color: #ef9299;
+  }
+  ::selection {
+    background: #a8b7cc;
+    color: #101114;
+  }
+}
+
+/* Keep the document canvas stable when route-specific layered CSS is added. */
+html,
+body {
+  min-width: 0;
+  background: #08090b;
+  color: #f4f4f5;
+}
+#root {
+  min-width: 0;
+}
+
+@layer components {
+  .wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding-inline: 40px;
+  }
+  .muted {
+    color: var(--muted);
+  }
+  .small {
+    font-size: 12px;
+  }
+  .full {
+    width: 100%;
+  }
+  .sr-only {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .skip-link {
+    position: fixed;
+    top: -80px;
+    left: 12px;
+    z-index: 1000;
+    padding: 12px 18px;
+    background: #f4f4f5;
+    color: #08090b;
+    border-radius: 8px;
+  }
+  .skip-link:focus {
+    top: 12px;
+  }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 11px 17px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  .button.primary {
+    background: #f4f4f5;
+    color: #08090b;
+  }
+  .button.primary:hover:not(:disabled) {
+    background: #d8dee8;
+  }
+  .button.secondary {
+    background: #17181c;
+    border-color: #42434b;
+    color: #f4f4f5;
+  }
+  .text-button,
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--indigo);
+    font-weight: 500;
+    font-size: 13px;
+    padding: 0;
+  }
+  .text-button:hover,
+  .text-link:hover {
+    text-decoration: underline;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    line-height: 1;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -1.4px;
+  }
+  .logo-thin {
+    font-weight: 400;
+  }
+  .logo small {
+    display: block;
+    margin-top: 7px;
+    letter-spacing: 1.2px;
+    font-size: 9px;
+    font-weight: 500;
+    color: #a1a1aa;
+  }
+  .logo-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: 33px;
+    height: 37px;
+    border-radius: 9px;
+    background: var(--indigo);
+    transform: rotate(-5deg);
+  }
+  .logo-mark span {
+    width: 4px;
+    background: #08090b;
+    border-radius: 3px;
+    transform: rotate(22deg);
+  }
+  .logo-mark span:nth-child(1) {
+    height: 12px;
+  }
+  .logo-mark span:nth-child(2) {
+    height: 23px;
+  }
+  .logo-mark span:nth-child(3) {
+    height: 17px;
+  }
+  .logo.inverse {
+    color: #f4f4f5;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    padding: 4px 8px;
+    border: 1px solid #42434b;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    background: #202127;
+    color: #c4c5cc;
+  }
+  .badge-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .badge-hot {
+    background: #321b20;
+    border-color: #71363b;
+    color: #ffb0ab;
+  }
+  .badge-warm {
+    background: #302619;
+    border-color: #695535;
+    color: #e6c889;
+  }
+  .badge-cold {
+    background: #1b2634;
+    border-color: #384f6b;
+    color: #adc7e9;
+  }
+  .spinner {
+    width: 17px;
+    height: 17px;
+    display: inline-block;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 70px 20px;
+    color: #a1a1aa;
+    font-size: 14px;
+  }
+  .notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    border: 1px solid #343942;
+    background: #151a21;
+    color: #b7c3d4;
+    padding: 15px 17px;
+    border-radius: 9px;
+    font-size: 13px;
+    margin: 16px 0;
+  }
+  .notice p {
+    margin: 0;
+  }
+  .notice.error {
+    border-color: #643338;
+    background: #26171b;
+    color: #ffc0c5;
+  }
+  .notice.compact {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .notice .text-button {
+    display: block;
+    margin-top: 7px;
+  }
+  .route-state {
+    max-width: 680px;
+    padding: 40px 20px;
+    margin: auto;
+  }
+  .auth-loading {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    margin-bottom: 18px;
+  }
+  .field > span {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .field b {
+    color: var(--indigo);
+    font-weight: 500;
+  }
+  .field small {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .field-error {
+    color: #ffc0c5;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
+  }
+  .privacy-note {
+    color: #a1a1aa;
+    font-size: 12px;
+    line-height: 1.65;
+    margin-top: 14px;
+  }
+  .success-state {
+    text-align: center;
+    padding: 32px 12px;
+  }
+  .success-state h3 {
+    margin-block: 16px 10px;
+  }
+  .success-state p {
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .success-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    border: 1px solid #3e6251;
+    border-radius: 50%;
+    color: #a4d4ba;
+    background: #152820;
+  }
+  .reference {
+    display: block;
+    margin-bottom: 22px;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    color: var(--muted);
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+@layer responsive {
+  @media (max-width: 640px) {
+    .wrap {
+      padding-inline: 20px;
+    }
+    .form-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

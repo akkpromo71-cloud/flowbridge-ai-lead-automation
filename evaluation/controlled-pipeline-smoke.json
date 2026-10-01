@@ -1,0 +1,13 @@
+{
+  "id": "controlled-pipeline-01",
+  "source": "Мы — мастерская печати постеров. Заказы приходят через форму на сайте, а координатор вручную переносит обращения в таблицу. Нужна автоматизация приёма и анализа входящих заявок, при этом каждый ответ должен одобрять координатор. Хотим сократить повторный ввод и быстрее разбирать обращения. Пришлите предложение по такому проекту. На ваши услуги выделяем ровно 460000 KZT разово за проект. Начать работу хотим через 45 дней.",
+  "expectations": {
+    "field_values": {"service_fit": ["fit"], "service_id": ["lead_automation"], "language": ["ru"], "urgency": ["within_90_days"], "intent": ["proposal"], "suggested_next_action": ["discuss_project", "clarify"]},
+    "budgets": [{"minimum": ["460000"], "maximum": ["460000"], "currency": ["KZT"], "period": ["one_time"], "purpose": ["services"], "service_id": [null, "lead_automation"]}],
+    "non_null_fields": ["business_context.value", "desired_outcome.value"],
+    "null_fields": [], "contradictions": "empty", "validation": "pass", "required_issue_codes": [], "scoring_status": "completed"
+  },
+  "expected_score": 95,
+  "expected_temperature": "HOT",
+  "forbidden_inventions": ["delivery deadline", "advertising budget", "automatically approved or sent reply", "unknown service fee or currency"]
+}

@@ -1,0 +1,377 @@
+{
+  "id": "aiLeadCommunication",
+  "name": "AI Lead | communication",
+  "active": false,
+  "nodes": [
+    {
+      "id": "dispatch",
+      "name": "Dispatch",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "ai-lead-communication",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ai-lead-communication",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {
+          "responseCode": {
+            "values": {
+              "responseCode": 202
+            }
+          },
+          "noResponseBody": true
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadWebhookAuth",
+          "name": "AI Lead Dispatch Webhook"
+        }
+      }
+    },
+    {
+      "id": "is-notification",
+      "name": "Notification?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "match-notification",
+              "leftValue": "={{ $(\"Dispatch\").item.json.body.kind }}",
+              "rightValue": "notification",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "notify",
+      "name": "Notify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        660,
+        -200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=http://127.0.0.1:8000/internal/v1/jobs/{{ $('Dispatch').item.json.body.job_id }}/steps/notify",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { generation: $(\"Dispatch\").item.json.body.generation } }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadInternalAuth",
+          "name": "AI Lead Internal API"
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "is-email_send",
+      "name": "Email send?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        440,
+        100
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "match-email_send",
+              "leftValue": "={{ $(\"Dispatch\").item.json.body.kind }}",
+              "rightValue": "email_send",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "send",
+      "name": "Send approved message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        660,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=http://127.0.0.1:8000/internal/v1/jobs/{{ $('Dispatch').item.json.body.job_id }}/steps/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { generation: $(\"Dispatch\").item.json.body.generation } }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadInternalAuth",
+          "name": "AI Lead Internal API"
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "is-followup_prepare",
+      "name": "Follow-up draft?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        660,
+        200
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "match-followup_prepare",
+              "leftValue": "={{ $(\"Dispatch\").item.json.body.kind }}",
+              "rightValue": "followup_prepare",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "draft",
+      "name": "Prepare follow-up draft",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        880,
+        180
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=http://127.0.0.1:8000/internal/v1/jobs/{{ $('Dispatch').item.json.body.job_id }}/steps/draft",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { generation: $(\"Dispatch\").item.json.body.generation } }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadInternalAuth",
+          "name": "AI Lead Internal API"
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "finish",
+      "name": "Finish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1100,
+        -80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=http://127.0.0.1:8000/internal/v1/jobs/{{ $('Dispatch').item.json.body.job_id }}/steps/finish",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { generation: $(\"Dispatch\").item.json.body.generation } }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadInternalAuth",
+          "name": "AI Lead Internal API"
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "invalid-job",
+      "name": "Unsupported job kind",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        880,
+        400
+      ],
+      "parameters": {
+        "errorMessage": "Unsupported job kind"
+      }
+    }
+  ],
+  "connections": {
+    "Dispatch": {
+      "main": [
+        [
+          {
+            "node": "Notification?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notification?": {
+      "main": [
+        [
+          {
+            "node": "Notify",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email send?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email send?": {
+      "main": [
+        [
+          {
+            "node": "Send approved message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Follow-up draft?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow-up draft?": {
+      "main": [
+        [
+          {
+            "node": "Prepare follow-up draft",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unsupported job kind",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify": {
+      "main": [
+        [
+          {
+            "node": "Finish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send approved message": {
+      "main": [
+        [
+          {
+            "node": "Finish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare follow-up draft": {
+      "main": [
+        [
+          {
+            "node": "Finish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "UTC",
+    "executionTimeout": 180,
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false
+  },
+  "pinData": {},
+  "tags": []
+}

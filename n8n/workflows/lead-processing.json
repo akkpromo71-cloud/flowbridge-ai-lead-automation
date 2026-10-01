@@ -1,0 +1,235 @@
+{
+  "id": "aiLeadProcessing",
+  "name": "AI Lead | lead-processing",
+  "active": false,
+  "nodes": [
+    {
+      "id": "dispatch",
+      "name": "Dispatch",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "ai-lead-processing",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ai-lead-processing",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {
+          "responseCode": {
+            "values": {
+              "responseCode": 202
+            }
+          },
+          "noResponseBody": true
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadWebhookAuth",
+          "name": "AI Lead Dispatch Webhook"
+        }
+      }
+    },
+    {
+      "id": "is-lead_processing",
+      "name": "Lead processing?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "match-lead_processing",
+              "leftValue": "={{ $(\"Dispatch\").item.json.body.kind }}",
+              "rightValue": "lead_processing",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "analyze",
+      "name": "Analyze",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        440,
+        -80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=http://127.0.0.1:8000/internal/v1/jobs/{{ $('Dispatch').item.json.body.job_id }}/steps/analyze",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { generation: $(\"Dispatch\").item.json.body.generation } }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadInternalAuth",
+          "name": "AI Lead Internal API"
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "draft",
+      "name": "Draft",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        660,
+        -80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=http://127.0.0.1:8000/internal/v1/jobs/{{ $('Dispatch').item.json.body.job_id }}/steps/draft",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { generation: $(\"Dispatch\").item.json.body.generation } }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadInternalAuth",
+          "name": "AI Lead Internal API"
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "finish",
+      "name": "Finish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        880,
+        -80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=http://127.0.0.1:8000/internal/v1/jobs/{{ $('Dispatch').item.json.body.job_id }}/steps/finish",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { generation: $(\"Dispatch\").item.json.body.generation } }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aiLeadInternalAuth",
+          "name": "AI Lead Internal API"
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "invalid-job",
+      "name": "Unsupported job kind",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        620,
+        420
+      ],
+      "parameters": {
+        "errorMessage": "Unsupported job kind"
+      }
+    }
+  ],
+  "connections": {
+    "Dispatch": {
+      "main": [
+        [
+          {
+            "node": "Lead processing?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead processing?": {
+      "main": [
+        [
+          {
+            "node": "Analyze",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unsupported job kind",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze": {
+      "main": [
+        [
+          {
+            "node": "Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft": {
+      "main": [
+        [
+          {
+            "node": "Finish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "UTC",
+    "executionTimeout": 180,
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false
+  },
+  "pinData": {},
+  "tags": []
+}

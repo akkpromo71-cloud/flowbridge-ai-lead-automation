@@ -1,0 +1,213 @@
+.lf-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  color: #f4f4f5;
+  background: #08090bf5;
+  border-bottom: 1px solid #ffffff0b;
+}
+.lf-header-inner {
+  max-width: 1456px;
+  min-height: 76px;
+  padding: 0 40px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.lf-header .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #fafafa;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: -1px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lf-header .logo-thin {
+  font-weight: 400;
+}
+.lf-header .logo-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 25px;
+  height: 28px;
+  border-radius: 0;
+  transform: skewX(-13deg);
+  background: none;
+  box-shadow: none;
+}
+.lf-header .logo-mark span {
+  width: 4px;
+  height: 15px;
+  border-radius: 1px;
+  background: #e9e9ed;
+}
+.lf-header .logo-mark span:nth-child(2) {
+  height: 24px;
+}
+.lf-header .logo-mark span:nth-child(3) {
+  height: 19px;
+}
+.lf-header .logo small {
+  display: none;
+}
+.lf-desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+.lf-desktop-nav a,
+.lf-header-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  font-size: 13px;
+  color: #a2a2aa;
+  text-decoration: none;
+  transition:
+    color 0.18s ease,
+    background 0.18s ease;
+}
+.lf-desktop-nav a:hover,
+.lf-header-actions .lf-login-link:hover {
+  color: white;
+}
+.lf-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+}
+.lf-header-actions .lf-header-cta {
+  min-height: 44px;
+  padding: 0 16px;
+  background: #17181b;
+  box-shadow: none;
+  border: 1px solid #333437;
+  border-radius: 6px;
+  color: #f0f0f2;
+  font-weight: 500;
+}
+.lf-header-actions .lf-header-cta:hover {
+  background: #27282b;
+  border-color: #48494d;
+}
+.lf-menu-toggle {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #303135;
+  border-radius: 6px;
+  background: #111215;
+  color: white;
+  cursor: pointer;
+}
+.lf-menu-toggle span {
+  width: 15px;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.2s;
+}
+.lf-menu-toggle[aria-expanded="true"] span:first-child {
+  transform: translateY(3px) rotate(45deg);
+}
+.lf-menu-toggle[aria-expanded="true"] span:last-child {
+  transform: translateY(-3px) rotate(-45deg);
+}
+.lf-mobile-nav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: 12px 24px 20px;
+  background: #101114;
+  border-bottom: 1px solid #303135;
+  box-shadow: 0 12px 24px #0004;
+}
+.lf-mobile-nav a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 0;
+  color: #dbdbe0;
+  font-size: 14px;
+  text-decoration: none;
+}
+.lf-mobile-nav a:hover {
+  color: #fff;
+}
+.lf-mobile-nav a:last-child {
+  margin-top: 8px;
+  padding-top: 17px;
+  border-top: 1px solid #292a2e;
+  color: #f4f4f5;
+}
+.lf-header :is(a, button):focus-visible {
+  outline: 2px solid #c7c7d1;
+  outline-offset: 5px;
+}
+@media (max-width: 1050px) {
+  .lf-header-inner {
+    padding-inline: 28px;
+    gap: 20px;
+  }
+  .lf-desktop-nav {
+    gap: 18px;
+  }
+  .lf-header-actions {
+    gap: 18px;
+  }
+  .lf-desktop-nav a {
+    font-size: 12px;
+  }
+}
+@media (max-width: 800px) {
+  .lf-header-inner {
+    min-height: 68px;
+    padding-inline: 24px;
+  }
+  .lf-desktop-nav,
+  .lf-header-actions .lf-header-cta {
+    display: none;
+  }
+  .lf-menu-toggle {
+    display: flex;
+  }
+  .lf-header-actions {
+    gap: 18px;
+  }
+  .lf-header .logo {
+    font-size: 23px;
+  }
+}
+@media (max-width: 400px) {
+  .lf-header-inner {
+    padding-inline: 18px;
+  }
+  .lf-header-actions {
+    gap: 10px;
+  }
+  .lf-header-actions .lf-login-link {
+    font-size: 12px;
+  }
+  .lf-header .logo {
+    font-size: 21px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lf-header * {
+    transition: none !important;
+  }
+}

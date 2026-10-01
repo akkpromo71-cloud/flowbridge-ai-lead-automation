@@ -1,0 +1,45 @@
+version: marketing-1
+business_id: marketing
+company_name: Signal Studio
+tagline: Маркетинговые обращения в понятном рабочем процессе
+timezone: Asia/Qyzylorda
+language: ru
+services:
+  - id: performance_marketing
+    name: Performance-маркетинг
+    description: Планирование и сопровождение рекламных кампаний для B2B-компаний.
+  - id: content_strategy
+    name: Контент-стратегия
+    description: Разработка контент-стратегии и коммуникаций для B2B-компаний.
+branding:
+  primary_color: '#0F766E'
+  headline: От нового обращения к содержательному разговору.
+  description: Отделяйте рекламный бюджет от стоимости услуг. Проверяйте факты и согласовывайте каждый ответ клиенту.
+  primary_cta: Обсудить проект
+  secondary_cta: Посмотреть демо
+scoring:
+  version: scoring-1
+  hot_min: 70
+  warm_min: 40
+  not_fit_cap: 39
+  budget_thresholds:
+    - service_id: performance_marketing
+      currency: KZT
+      period: monthly
+      amount: '200000'
+    - service_id: content_strategy
+      currency: KZT
+      period: monthly
+      amount: '200000'
+followup:
+  delay_hours: 48
+  mailbox_freshness_minutes: 5
+ai:
+  model: gpt-4.1-mini-2025-04-14
+  prompt_version: lead-facts-1
+  max_output_tokens: 2400
+  timeout_seconds: 40
+approved_facts:
+  - Мы обсуждаем маркетинговые услуги для B2B-компаний.
+  - Рекламный бюджет учитывается отдельно от стоимости услуг агентства.
+privacy_notice: Контакты и текст обращения используются для обработки вашего запроса. Условия работы с реальными данными и сроки хранения согласуются перед клиентским пилотом. В демонстрации используйте только синтетические данные.

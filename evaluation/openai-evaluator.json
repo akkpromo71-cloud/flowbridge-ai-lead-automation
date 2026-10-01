@@ -1,0 +1,11 @@
+{
+  "business_config": "../config/automation.yaml",
+  "cases_file": "openai-cases.json",
+  "pricing": {
+    "model": "gpt-4.1-mini-2025-04-14",
+    "input_per_million_usd": "0.40",
+    "output_per_million_usd": "1.60",
+    "as_of": "2026-09-27",
+    "source": "https://developers.openai.com/api/docs/models/gpt-4.1-mini"
+  }
+}

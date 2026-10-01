@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "name": "ai-lead-n8n-runtime",
+  "version": "1.0.0",
+  "dependencies": {
+    "n8n": "2.40.7"
+  }
+}
