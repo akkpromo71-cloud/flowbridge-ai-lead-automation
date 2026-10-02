@@ -27,7 +27,7 @@ function Get-OwnedDevProcess($Record) {
 
 function Get-LiveDevRecords([string]$Marker) {
     if (-not (Test-Path -LiteralPath $Marker)) { return @() }
-    $records = @(Get-Content -LiteralPath $Marker -Raw | ConvertFrom-Json)
+    $records = Get-Content -LiteralPath $Marker -Raw | ConvertFrom-Json
     $seen = @{}
     foreach ($record in $records) {
         if (Get-OwnedDevProcess $record) {
