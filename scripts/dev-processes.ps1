@@ -10,7 +10,7 @@ function Enter-ProjectLaunchLock([string]$ProjectRoot) {
 }
 
 function Get-OwnedDevProcess($Record) {
-    $needles = @{ api='app.main:create_app'; frontend='node_modules/vite/bin/vite.js'; worker='app.worker' }
+    $needles = @{ api='app.main:create_app'; frontend='node_modules/vite/bin/vite.js'; worker='app.worker'; n8n=(Join-Path $env:LOCALAPPDATA 'AILeadAutomationPro\n8n-runtime\node_modules\n8n\bin\n8n') }
     if (-not $Record -or $Record.name -notin $needles.Keys -or -not $Record.pid -or -not $Record.path) {
         throw 'Invalid project process record.'
     }
@@ -34,6 +34,14 @@ function Get-LiveDevRecords([string]$Marker) {
             if (-not $seen.ContainsKey([int]$record.pid)) { $seen[[int]$record.pid]=$true; $record }
         }
     }
+}
+
+function Assert-NoUnrecordedWorker {
+    # A worker has no listening port. Without a marker it cannot be adopted,
+    # but an existing app.worker must still prevent a duplicate launch.
+    $workers = @(Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction Stop |
+        Where-Object { $_.CommandLine -and $_.CommandLine.Contains('app.worker') })
+    if ($workers.Count) { throw 'An unrecorded app.worker exists; no duplicate was started and no process was changed.' }
 }
 
 function Save-DevRecords([string]$Marker, [array]$Records) {

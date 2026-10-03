@@ -35,3 +35,41 @@ Real analysis VERIFIED controlled: ровно один real request, HTTP 200, g
 Scoring/human approval VERIFIED локально; SMTP/Telegram/IMAP IMPLEMENTED, live UNVERIFIED/BLOCKED. Исторические browser/worker/n8n/backup результаты не выдаются за повторный текущий прогон. Production HTTPS/target environment pending, Docker runtime UNVERIFIED. Подробная история сохранена local-only в `.local/portfolio-history`.
 
 Публичные claims и live matrix — [FINAL_PROJECT_REPORT.md](../FINAL_PROJECT_REPORT.md). Git audit/security и точные финальные результаты — [PORTFOLIO_AUDIT.md](PORTFOLIO_AUDIT.md).
+
+## Локальные launchers — 2026-10-04
+
+Добавлены START/STOP CMD entry points; см. [local-launcher.md](local-launcher.md).
+Business/backend/frontend code, scoring, analysis, approval и workflow-файлы не менялись.
+23/23 launcher regression checks прошли отдельно в Windows PowerShell
+5.1.26100.9444 и PowerShell 7.6.5, включая AST syntax checks.
+`node --check n8n/manage-local.mjs` и `git diff --check` прошли.
+2/2 `node --test n8n/tests/local-readiness.test.mjs` прошли: ready probe и
+wall-clock deadline с synthetic clock/HTTP, без реальных сетевых запросов.
+26/26 существующих `test_db_safety.py` + `test_logging_privacy.py` прошли;
+Ruff backend прошёл. Первый safety pytest дал 25 passed / 1 setup error:
+`TEST_DATABASE_URL` не был задан. Повтор с явно заданным allowlisted
+`ai_leads_test` дал 26 passed; этот прогон использовал mocks, без очистки БД.
+Full backend/frontend suite не повторялся: business/UI code не менялся.
+
+CMD entry points реально выполнены в цикле START → повторный START → STOP → START
+на пустой synthetic demo-БД с process-local DATABASE_URL. После повторного START
+PID всех пяти сервисов остались прежними. После STOP четыре сервисных порта
+освободились, worker marker удалён; data directories сохранены.
+При реальном чужом listener на 15432 startup безопасно отказался, listener остался жив.
+Readiness n8n/API/frontend — HTTP 200; PostgreSQL прошёл identity + DB connection checks.
+Основные leads/analyses/messages/message_versions/approval_decisions/jobs/job_steps/audit_events
+до/после совпали по количествам и SHA-256 содержимого (без вывода сообщений/данных).
+Тестовая БД сохранена локально; основной `.env` не менялся.
+
+Первый cold n8n startup превысил старые 180 секунд и завершился timeout.
+Процесс остался owned и позднее стал ready; следующий START переиспользовал его.
+После явного demo timeout до 600 секунд следующий cold STOP → START прошёл полностью.
+Default controlled readiness budget остаётся 180 секунд; workflow-файлы не менялись.
+После тестов исходный demo возвращается с `-SkipWorker`, как до проверки,
+чтобы не обработать ожидающие заявки основной demo-БД.
+
+Открытие Chrome с заголовком Flowbridge после START наблюдалось автоматически.
+Физический double-click не проверен: Windows Computer Use остановил GUI-проверку,
+не сумев надёжно определить browser URL. CMD lifecycle проверен прямым выполнением
+entry points; UI-ограничение не выдается за успешный физический click-тест.
+Новых live OpenAI/SMTP/Telegram/IMAP requests и controlled smoke запусков: 0.

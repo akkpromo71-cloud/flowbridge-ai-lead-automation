@@ -19,6 +19,9 @@ const markerPath = join(data, 'project-owner.json');
 const pidPath = join(data, 'process.json');
 const workflowIds = ['aiLeadProcessing', 'aiLeadCommunication', 'aiLeadMailSync', 'aiLeadFollowupCheck'];
 const command = process.argv[2] ?? 'start';
+// Optional local launcher readiness budget; controlled callers keep the default.
+const readinessSeconds = Number(process.argv.find((arg) => arg.startsWith('--ready-timeout='))?.split('=')[1] ?? 180);
+if (!Number.isInteger(readinessSeconds) || readinessSeconds < 1 || readinessSeconds > 600) throw new Error('Readiness timeout must be 1..600 seconds');
 
 if (existsSync(data)) {
   if (!existsSync(markerPath)) throw new Error('Refusing to use an unowned n8n directory');
@@ -120,12 +123,13 @@ async function configureInitialOwner() {
 }
 
 async function waitUntilReady() {
-  for (let attempt = 0; attempt < 180; attempt += 1) {
+  const deadline = Date.now() + readinessSeconds * 1000;
+  while (Date.now() < deadline) {
     try {
-      const response = await fetch(`${baseUrl}/healthz/readiness`, { signal: AbortSignal.timeout(1500) });
+      const response = await fetch(`${baseUrl}/healthz/readiness`, { signal: AbortSignal.timeout(Math.max(1, Math.min(1500, deadline - Date.now()))) });
       if (response.ok) return;
     } catch { /* First startup loads and verifies the installed node types. */ }
-    await new Promise((ok) => setTimeout(ok, 1000));
+    await new Promise((ok) => setTimeout(ok, Math.max(0, Math.min(1000, deadline - Date.now()))));
   }
   throw new Error(`n8n did not become ready; see logs in ${data}`);
 }

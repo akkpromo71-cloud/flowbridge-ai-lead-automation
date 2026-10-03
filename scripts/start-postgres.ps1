@@ -16,6 +16,11 @@ $archiveName = 'postgresql-17.11-4-windows-x64-binaries.zip'
 $archivePath = Join-Path (Join-Path $localRoot 'downloads') $archiveName
 $archiveUrl = "https://get.enterprisedb.com/postgresql/$archiveName"
 $expectedHash = 'B9424EE7BC60B52450FF910A3630225DF32E633F3CB29C1D126D9299D59AEA28'
+. (Join-Path $PSScriptRoot 'local-infrastructure.ps1')
+if (Get-OwnedPostgres $projectRoot -RequireReady) {
+    Write-Host 'PostgreSQL: already running'
+    return
+}
 
 if (Test-Path -LiteralPath $runtimeRoot) {
     if (-not (Test-Path -LiteralPath $markerPath)) {
@@ -169,4 +174,5 @@ foreach ($database in @('ai_leads_demo', 'ai_leads_test', 'ai_leads_n8n', 'ai_le
     if ($LASTEXITCODE -ne 0) { throw "Connection check failed for $database." }
 }
 Write-Host 'Synthetic demo/test PostgreSQL is ready at 127.0.0.1:15432.'
+Get-OwnedPostgres $projectRoot -RequireReady | Out-Null
 Write-Host "Data and logs: $runtimeRoot"

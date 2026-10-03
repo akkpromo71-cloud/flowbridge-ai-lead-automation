@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([switch]$SkipN8n, [switch]$SkipWorker)
+param([switch]$SkipN8n, [switch]$SkipWorker, [switch]$OpenBrowser)
 $ErrorActionPreference = 'Stop'
 $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $localRoot = Join-Path $projectRoot '.local'
@@ -10,11 +10,17 @@ New-Item -ItemType Directory -Force -Path $localRoot | Out-Null
 $launchLock = Enter-ProjectLaunchLock $projectRoot
 Push-Location $projectRoot
 try {
-    & (Join-Path $PSScriptRoot 'start-postgres.ps1')
     if (-not (Test-Path -LiteralPath (Join-Path $projectRoot '.env'))) {
         & $pythonExe -m app.cli init-env
         if ($LASTEXITCODE -ne 0) { throw 'Environment setup failed.' }
     }
+    if ($OpenBrowser) {
+        # The one-click demo entry point cannot launch a live/controlled worker.
+        & $pythonExe -c "import sys; from app.settings import Settings; sys.exit(0 if Settings().mode == 'demo' else 'One-click launcher requires demo mode')"
+        if ($LASTEXITCODE -ne 0) { throw 'Demo configuration check failed; no services were started.' }
+        if ($SkipN8n -or $SkipWorker) { throw 'One-click readiness requires n8n and worker.' }
+    }
+    & (Join-Path $PSScriptRoot 'start-postgres.ps1')
     & $pythonExe -m alembic upgrade head
     if ($LASTEXITCODE -ne 0) { throw 'Migration failed.' }
     if (-not $SkipN8n) { & (Join-Path $PSScriptRoot 'start-n8n.ps1') }
@@ -48,6 +54,10 @@ try {
         Write-Host "$($spec.name): ready."
     }
 
+    if ($OpenBrowser) {
+        $apiConfig = Invoke-RestMethod -Uri 'http://127.0.0.1:8000/api/v1/public/config' -TimeoutSec 3
+        if ($apiConfig.mode -ne 'demo') { throw 'The owned API is not in demo mode; worker and browser were not started.' }
+    }
     $workerMarker = Join-Path $localRoot 'worker-process.json'
     $workerRunning = $false
     if (Test-Path -LiteralPath $workerMarker) {
@@ -56,6 +66,7 @@ try {
         $workerRunning = $null -ne (Get-OwnedDevProcess $workerRecord)
     }
     if (-not $SkipWorker -and -not $workerRunning) {
+        Assert-NoUnrecordedWorker
         $worker = Start-Process -FilePath $pythonExe -ArgumentList @('-m','app.worker') -WorkingDirectory $projectRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $localRoot 'worker.out.log') -RedirectStandardError (Join-Path $localRoot 'worker.err.log')
         $workerRecord = @{name='worker';pid=$worker.Id;path=$pythonExe;startedAt=$worker.StartTime.ToUniversalTime().ToString('o')}
         $workerRecord | ConvertTo-Json | Set-Content -LiteralPath $workerMarker
@@ -64,6 +75,29 @@ try {
         Write-Host 'worker: started.'
     } elseif (-not $SkipWorker) { Write-Host 'worker: existing project process is running.' }
     Write-Host 'Local UI: http://127.0.0.1:5173 ; API: http://127.0.0.1:8000'
+    if ($OpenBrowser) {
+        Start-Process 'http://127.0.0.1:5173/'
+        Write-Host @'
+=================================
+FLOWBRIDGE READY
+
+Site:
+http://127.0.0.1:5173
+
+Dashboard:
+http://127.0.0.1:5173/#/app
+
+Demo:
+http://127.0.0.1:5173/#/demo
+
+API:
+http://127.0.0.1:8000
+
+n8n:
+http://127.0.0.1:5681
+=================================
+'@
+    }
 } finally {
     Pop-Location
     $launchLock.Dispose()
