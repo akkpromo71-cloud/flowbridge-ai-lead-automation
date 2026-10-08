@@ -88,9 +88,23 @@ Human review обязателен: schema validity не доказывает ф�
 
 Single-company-per-deployment v1: один бизнес, его услуги и оператор. Это не multitenant SaaS, billing platform или full CRM. Live external credentials и реальные коммуникации требуют отдельного клиентского пилота. RAG, новые каналы и автономная клиентская переписка не входят в v1.
 
-## Demo
+## Demo Video
 
-Demo video: ссылка будет добавлена после записи; публичного demo URL пока нет.
+[▶ Watch Flowbridge — AI Lead Automation Demo](https://youtu.be/YuSKgCZu7Y8)
+
+[![Flowbridge demo — synthetic lead dashboard](docs/assets/portfolio/dashboard.png)](https://youtu.be/YuSKgCZu7Y8 "Flowbridge — AI Lead Automation System | Project Demo")
+
+A short product demonstration showcasing:
+
+- Lead management and prioritization
+- Structured lead analysis
+- Deterministic HOT/WARM/COLD scoring
+- Response drafts with human approval
+- Dashboard and analytics
+
+The interface uses synthetic data and simulated providers.
+Real OpenAI analysis and draft generation were verified
+separately in a controlled environment.
 
 [Сценарий на 3 минуты](docs/PORTFOLIO_DEMO.md) · [Описание для CV/HH/LinkedIn](docs/PORTFOLIO_PROJECT_DESCRIPTION.md) · [План кадров](docs/PORTFOLIO_SCREENSHOTS.md).
 
